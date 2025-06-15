@@ -27,5 +27,9 @@
 
 ;;; Code:
 
+(require 'convention-comments)
+(require 'convention-commits)
+
+
 (provide 'convention)
 ;;; convention.el ends here
