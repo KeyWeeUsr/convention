@@ -6,15 +6,18 @@
 ;;; Code:
 
 (defsubst convention-comments-syntax-defaults ()
+  "Basic setup for font-lock."
   (font-lock-set-defaults)
   (setq-local font-lock-keywords-case-fold-search t))
 
 (defvar convention-comments-decoration-colors
   '("#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#17becf"
     "#bcbd22" "#7f7f7f" "#e377c2" "#ff6f61" "#30cfcf" "#b5bd00"
-    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f""#6a5acd"))
+    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f""#6a5acd")
+  "List of decoration colors to alternate through.")
 
 (defsubst convention-comments-syntax-elisp-keywords ()
+  "Create conventional comments keywords for ELisp."
   `((,(rx (literal ";") (*? whitespace)
           (group (or "praise" "nitpick" "suggestion"
                      "issue" "todo" "question"
@@ -80,20 +83,24 @@
       ))))
 
 (defsubst convention-comments-set-syntax-elisp ()
+  "Add conventional comments syntax in ELisp."
   (convention-comments-syntax-defaults)
   (font-lock-add-keywords nil (convention-comments-syntax-elisp-keywords))
   (font-lock-update))
 
 (defsubst convention-comments-unset-syntax-elisp ()
+  "Remove conventional comments syntax in ELisp."
   (convention-comments-syntax-defaults)
   (font-lock-remove-keywords nil (convention-comments-syntax-elisp-keywords))
   (font-lock-update))
 
 (defun convention-comments-syntax--activate ()
+  "Add conventional comments syntax."
   (cond ((derived-mode-p 'emacs-lisp-mode)
          (convention-comments-set-syntax-elisp))))
 
 (defun convention-comments-syntax--deactivate ()
+  "Remove conventional comments syntax."
   (cond ((derived-mode-p 'emacs-lisp-mode)
          (convention-comments-unset-syntax-elisp))))
 
