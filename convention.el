@@ -24,6 +24,15 @@
 ;;; Commentary:
 
 ;; A collection of minor modes supporting conventional syntax.
+;;
+;; To enable it for commits with basic EDITOR=emacsclient, you can use:
+;; (add-hook
+;;  'find-file-hook
+;;  (lambda (&rest _)
+;;    (when (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
+;;      (convention-commits-mode))))
+;;
+;; The hook worked for me both with plain term and with magit (with EDITOR env)
 
 ;;; Code:
 
@@ -32,6 +41,7 @@
 
 ;;;###autoload
 (define-minor-mode convention-comments-mode
+  "Minor mode for conventional comments."
   :group 'convention
   :lighter " convention"
   (if convention-comments-mode
@@ -40,6 +50,7 @@
 
 ;;;###autoload
 (define-minor-mode convention-commits-mode
+  "Minor mode for conventional commits."
   :group 'convention
   :lighter " convention"
   (if convention-commits-mode

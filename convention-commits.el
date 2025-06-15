@@ -6,35 +6,39 @@
 ;;; Code:
 
 (defsubst convention-commits-syntax-defaults ()
+  "Basic setup for font-lock."
   (setq-local font-lock-keywords-case-fold-search t))
 
 (defvar convention-commits-decoration-colors
   '("#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#17becf"
     "#bcbd22" "#7f7f7f" "#e377c2" "#ff6f61" "#30cfcf" "#b5bd00"
-    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f" "#6a5acd"))
+    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f" "#6a5acd")
+  "List of decoration colors to alternate through.")
 
-(defvar conventional-keywords
+(defvar convention-keywords
   '("build" "chore" "ci"
     "docs" "feat" "fix"
     "perf" "refactor" "revert"
-    "style" "test"))
+    "style" "test")
+  "Default used keywords.")
 
 (defsubst convention-commits-syntax-keywords ()
+  "Create conventional comments keywords."
   (let ((plain
          (rx-to-string `(and
-          string-start (group (or ,@conventional-keywords)) (*? not-newline)
+          string-start (group (or ,@convention-keywords)) (*? not-newline)
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline))
           line-end)))
         (decorated
          (rx-to-string `(and
-          string-start (or ,@conventional-keywords) (*? not-newline)
+          string-start (or ,@convention-keywords) (*? not-newline)
           (group (literal "(")) (*? not-newline) (group (literal ")"))
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline)) line-end)))
         (decoration-anchor
          (rx-to-string `(and
-          string-start (or ,@conventional-keywords) (*? whitespace)
+          string-start (or ,@convention-keywords) (*? whitespace)
           (literal "(") (group (*? anychar)) (literal ")") (? (literal "!"))
           (literal ":"))))
         (decoration (rx (+? (group (+ not-newline)) (*? (literal ","))))))
@@ -80,11 +84,13 @@
         )))))
 
 (defun convention-commits-syntax--activate ()
+  "Add conventional comments syntax."
   (convention-commits-syntax-defaults)
   (font-lock-add-keywords nil (convention-commits-syntax-keywords))
   (font-lock-update))
 
 (defun convention-commits-syntax--deactivate ()
+  "Remove conventional comments syntax."
   (convention-commits-syntax-defaults)
   (font-lock-remove-keywords nil (convention-commits-syntax-keywords))
   (font-lock-update))
