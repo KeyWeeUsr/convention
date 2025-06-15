@@ -38,6 +38,14 @@
       (convention-comments-syntax--activate)
     (convention-comments-syntax--deactivate)))
 
+;;;###autoload
+(define-minor-mode convention-commits-mode
+  :group 'convention
+  :lighter " convention"
+  (if convention-commits-mode
+      (convention-commits-syntax--activate)
+    (convention-commits-syntax--deactivate)))
+
 
 (provide 'convention)
 ;;; convention.el ends here
