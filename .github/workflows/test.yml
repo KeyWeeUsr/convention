@@ -20,13 +20,6 @@ jobs:
         ]
 
     steps:
-      - name: Install Emacs action deps
-        if: steps.cache-emacs.outputs.cache-hit != 'true'
-        run: |
-          # because 'act'
-          apt update
-          apt install -y sudo curl xz-utils
-
       - name: Set up Emacs
         uses: jcs090218/setup-emacs@master
         with:
