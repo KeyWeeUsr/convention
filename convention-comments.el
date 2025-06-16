@@ -13,47 +13,58 @@
 (defvar convention-comments-decoration-colors
   '("#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#17becf"
     "#bcbd22" "#7f7f7f" "#e377c2" "#ff6f61" "#30cfcf" "#b5bd00"
-    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f""#6a5acd")
+    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f" "#6a5acd")
   "List of decoration colors to alternate through.")
 
-(defsubst convention-comments-syntax-elisp-keywords ()
-  "Create conventional comments keywords for ELisp."
-  `((,(rx (literal ";") (*? whitespace)
-          (group (or "praise" "nitpick" "suggestion"
-                     "issue" "todo" "question"
-                     "thought" "chore" "note"))
+(defvar convention-comments-keywords
+  '("praise" "nitpick" "suggestion"
+    "issue" "todo" "question"
+    "thought" "chore" "note")
+  "Default used keywords.")
+
+(defsubst convention-comments-syntax-keywords (comment-string)
+  "Create conventional comments keywords for ELisp.
+Argument COMMENT-STRING represents one or more characters beginning a comment."
+  (let ((plain
+         (rx-to-string `(and
+          (literal ,comment-string) (*? whitespace)
+          (group (or ,@convention-comments-keywords))
           (*? not-newline)
           (group (literal ":"))
           (group (*? not-newline))
-          line-end)
-     (1 'font-lock-keyword-face t)
-     (2 'bold t)
-     (3 'italic append))
-    (,(rx (literal ";") (*? whitespace)
-          (or "praise" "nitpick" "suggestion"
-              "issue" "todo" "question"
-              "thought" "chore" "note")
+          line-end)))
+        (decorated
+         (rx-to-string `(and
+          (literal ,comment-string) (*? whitespace)
+          (or ,@convention-comments-keywords)
           (*? not-newline)
           (group (literal "("))
           (*? not-newline)
           (group (literal ")"))
           (group (literal ":"))
           (group (*? not-newline))
-          line-end)
-     (1 'bold t)
-     (2 'bold t)
-     (3 'bold t)
-     (4 'italic append))
-    (,(rx (literal ";") (*? whitespace)
-          (or "praise" "nitpick" "suggestion"
-              "issue" "todo" "question"
-              "thought" "chore" "note")
+          line-end)))
+        (decoration-anchor
+         (rx-to-string `(and
+          (literal ,comment-string) (*? whitespace)
+          (or ,@convention-comments-keywords)
           (*? whitespace)
           (literal "(")
           (group (*? anychar))
           (literal ")")
-          (literal ":"))
-     (,(rx (+? (group (+ not-newline)) (*? (literal ","))))
+          (literal ":"))))
+        (decoration (rx (+? (group (+ not-newline)) (*? (literal ","))))))
+    `((,plain
+       (1 'font-lock-keyword-face t)
+       (2 'bold t)
+       (3 'italic append))
+      (,decorated
+       (1 'bold t)
+       (2 'bold t)
+       (3 'bold t)
+       (4 'italic append))
+      (,decoration-anchor
+       (,decoration
       ;; pre-match form
       (progn
         ;; start matching in the parenthesis
@@ -80,29 +91,43 @@
       ;; post-match form
       nil
       ;; no group-matching props needed
-      ))))
+      )))))
 
-(defsubst convention-comments-set-syntax-elisp ()
-  "Add conventional comments syntax in ELisp."
+(defsubst convention-comments-set-syntax (comment-string)
+  "Add conventional comments syntax in ELisp.
+Argument COMMENT-STRING represents one or more characters beginning a comment."
   (convention-comments-syntax-defaults)
-  (font-lock-add-keywords nil (convention-comments-syntax-elisp-keywords))
+  (font-lock-add-keywords nil (convention-comments-syntax-keywords
+                               comment-string))
   (font-lock-update))
 
-(defsubst convention-comments-unset-syntax-elisp ()
-  "Remove conventional comments syntax in ELisp."
+(defsubst convention-comments-unset-syntax (comment-string)
+  "Remove conventional comments syntax in ELisp.
+Argument COMMENT-STRING represents one or more characters beginning a comment."
   (convention-comments-syntax-defaults)
-  (font-lock-remove-keywords nil (convention-comments-syntax-elisp-keywords))
+  (font-lock-remove-keywords nil (convention-comments-syntax-keywords
+                                  comment-string))
   (font-lock-update))
 
 (defun convention-comments-syntax--activate ()
   "Add conventional comments syntax."
-  (cond ((derived-mode-p 'emacs-lisp-mode)
-         (convention-comments-set-syntax-elisp))))
+  (if (and (boundp 'comment-start)
+           comment-start
+           (not (string= "" comment-start)))
+      (convention-comments-set-syntax comment-start)
+    (warn "convention: missing comment-start, fallback")
+    (cond ((derived-mode-p 'emacs-lisp-mode)
+           (convention-comments-set-syntax ";")))))
 
 (defun convention-comments-syntax--deactivate ()
   "Remove conventional comments syntax."
-  (cond ((derived-mode-p 'emacs-lisp-mode)
-         (convention-comments-unset-syntax-elisp))))
+  (if (and (boundp 'comment-start)
+           comment-start
+           (not (string= "" comment-start)))
+      (convention-comments-unset-syntax comment-start)
+    (warn "convention: missing comment-start, fallback")
+    (cond ((derived-mode-p 'emacs-lisp-mode)
+           (convention-comments-unset-syntax ";")))))
 
 
 (provide 'convention-comments)

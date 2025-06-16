@@ -15,7 +15,7 @@
     "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f" "#6a5acd")
   "List of decoration colors to alternate through.")
 
-(defvar convention-keywords
+(defvar convention-commits-keywords
   '("build" "chore" "ci"
     "docs" "feat" "fix"
     "perf" "refactor" "revert"
@@ -26,19 +26,19 @@
   "Create conventional comments keywords."
   (let ((plain
          (rx-to-string `(and
-          string-start (group (or ,@convention-keywords)) (*? not-newline)
+          string-start (group (or ,@convention-commits-keywords)) (*? not-newline)
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline))
           line-end)))
         (decorated
          (rx-to-string `(and
-          string-start (or ,@convention-keywords) (*? not-newline)
+          string-start (or ,@convention-commits-keywords) (*? not-newline)
           (group (literal "(")) (*? not-newline) (group (literal ")"))
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline)) line-end)))
         (decoration-anchor
          (rx-to-string `(and
-          string-start (or ,@convention-keywords) (*? whitespace)
+          string-start (or ,@convention-commits-keywords) (*? whitespace)
           (literal "(") (group (*? anychar)) (literal ")") (? (literal "!"))
           (literal ":"))))
         (decoration (rx (+? (group (+ not-newline)) (*? (literal ","))))))
