@@ -10,18 +10,6 @@
   (font-lock-set-defaults)
   (setq-local font-lock-keywords-case-fold-search t))
 
-(defvar convention-comments-decoration-colors
-  '("#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#17becf"
-    "#bcbd22" "#7f7f7f" "#e377c2" "#ff6f61" "#30cfcf" "#b5bd00"
-    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f" "#6a5acd")
-  "List of decoration colors to alternate through.")
-
-(defvar convention-comments-keywords
-  '("praise" "nitpick" "suggestion"
-    "issue" "todo" "question"
-    "thought" "chore" "note")
-  "Default used keywords.")
-
 (defsubst convention-comments-syntax-keywords (comment-string)
   "Create conventional comments keywords for ELisp.
 Argument COMMENT-STRING represents one or more characters beginning a comment."

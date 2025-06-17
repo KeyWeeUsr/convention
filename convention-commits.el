@@ -9,19 +9,6 @@
   "Basic setup for font-lock."
   (setq-local font-lock-keywords-case-fold-search t))
 
-(defvar convention-commits-decoration-colors
-  '("#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#17becf"
-    "#bcbd22" "#7f7f7f" "#e377c2" "#ff6f61" "#30cfcf" "#b5bd00"
-    "#a01920" "#4db6ac" "#9c89b8" "#8c564b" "#8dd35f" "#6a5acd")
-  "List of decoration colors to alternate through.")
-
-(defvar convention-commits-keywords
-  '("build" "chore" "ci"
-    "docs" "feat" "fix"
-    "perf" "refactor" "revert"
-    "style" "test")
-  "Default used keywords.")
-
 (defsubst convention-commits-syntax-keywords ()
   "Create conventional comments keywords."
   (let ((plain
