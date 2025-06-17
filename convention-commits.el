@@ -7,15 +7,12 @@
 
 (require 'convention-custom)
 
-(defsubst convention-commits-syntax-defaults ()
-  "Basic setup for font-lock."
-  (setq-local font-lock-keywords-case-fold-search t))
-
 (defsubst convention-commits-syntax-keywords ()
   "Create conventional comments keywords."
   (let ((plain
          (rx-to-string `(and
-          string-start (group (or ,@convention-commits-keywords)) (*? not-newline)
+          string-start (group (or ,@convention-commits-keywords))
+          (*? not-newline)
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline))
           line-end)))
@@ -74,13 +71,20 @@
 
 (defun convention-commits-syntax--activate ()
   "Add conventional comments syntax."
-  (convention-commits-syntax-defaults)
+  ;; todo(font-lock): whenever font-lock-defaults / set-defaults is used
+  ;; jit-lock-mode is not applied and mangles the highlighting
+  ;; and the hook is missing too
+  (jit-lock-mode 1)
+  (add-hook 'after-change-functions #'font-lock-after-change-function t t)
+
+  (setq-local font-lock-defaults '(nil nil t))
   (font-lock-add-keywords nil (convention-commits-syntax-keywords))
   (font-lock-update))
 
 (defun convention-commits-syntax--deactivate ()
   "Remove conventional comments syntax."
-  (convention-commits-syntax-defaults)
+  (remove-hook 'after-change-functions #'font-lock-after-change-function t)
+  (setq-local font-lock-defaults '(nil nil t))
   (font-lock-remove-keywords nil (convention-commits-syntax-keywords))
   (font-lock-update))
 
