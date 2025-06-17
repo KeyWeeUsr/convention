@@ -27,7 +27,17 @@
           string-start (or ,@convention-commits-keywords) (*? whitespace)
           (literal "(") (group (*? anychar)) (literal ")") (? (literal "!"))
           (literal ":"))))
-        (decoration (rx (+? (group (+ not-newline)) (*? (literal ","))))))
+        (decoration (rx (+? (group (+ not-newline)) (*? (literal ",")))))
+        (footer (rx (or (literal "\n\n") (literal "\r\n\r\n"))
+                    (group (+ (+ not-newline) "\n"))
+                    string-end))
+        (footer-header
+         (rx line-start
+             (or (group "breaking change")
+                 (group (+ (and (+ word) (? (literal "-"))))))
+             (group (literal ":"))
+             (group (*? not-newline))
+             line-end)))
     `((,plain
        (1 'font-lock-keyword-face t)
        (2 '(bold italic underline :foreground "#ff0000") t)
