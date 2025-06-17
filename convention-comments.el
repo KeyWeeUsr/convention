@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(require 'convention-custom)
+
 (defsubst convention-comments-syntax-defaults ()
   "Basic setup for font-lock."
   (font-lock-set-defaults)

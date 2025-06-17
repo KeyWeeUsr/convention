@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(require 'convention-custom)
+
 (defsubst convention-commits-syntax-defaults ()
   "Basic setup for font-lock."
   (setq-local font-lock-keywords-case-fold-search t))
