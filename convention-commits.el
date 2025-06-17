@@ -77,7 +77,24 @@
         ;; post-match form
         nil
         ;; no group-matching props needed
-        )))))
+        ))
+      (,footer
+       (,footer-header
+        ;; pre-match form
+        (progn
+          (put-text-property (match-beginning 0)
+                             (match-end 0)
+                             'font-lock-multiline t)
+          (goto-char (match-beginning 1))
+          ;; then keep the anchored match loop within the block
+          (match-end 1))
+        ;; post-match form
+        nil
+        ;; no group-matching props needed
+        (1 '(bold italic :foreground "#ff0000") nil t)
+        (2 'font-lock-keyword-face nil t)
+        (3 'bold)
+        (4 'italic))))))
 
 (defun convention-commits-syntax--activate ()
   "Add conventional comments syntax."
