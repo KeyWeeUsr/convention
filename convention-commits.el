@@ -96,8 +96,36 @@
         (3 'bold)
         (4 'italic))))))
 
+(defun convention-commits--should-suggest ()
+  "Check COMMIT_EDITMSG whether it's empty."
+  (catch 'suggest
+    (dolist (line (split-string (buffer-string) "\n" t " "))
+      (unless (string-prefix-p "#" line)
+        (throw 'suggest nil)))
+    (throw 'suggest t)))
+
+(defun convention-commits--ask-type ()
+  "Ask user for commit type to insert."
+  (let* ((start ?0) (prompt "Available choices:\n\n") choices choices-keys chosen)
+    (dotimes (idx (length convention-commits-keywords))
+      (let ((num (+ start idx))
+            (val (nth idx convention-commits-keywords)))
+        (push num choices-keys)
+        (setf (alist-get (intern (number-to-string num)) choices) val)
+        (setq prompt (format "%s%c = %s\n" prompt num val))))
+    (setq prompt (format "%s\n\nC-g = Quit" prompt))
+    (setq chosen (read-char-choice prompt (reverse choices-keys)))
+    (let ((found (alist-get (intern (number-to-string chosen)) choices)))
+      (when found
+        (insert (format "%s: " found))))))
+
 (defun convention-commits-syntax--activate ()
   "Add conventional comments syntax."
+  (when (and convention-commits-ask-for-type
+             (convention-commits--should-suggest))
+    (save-window-excursion
+      (convention-commits--ask-type)))
+
   ;; todo(font-lock): whenever font-lock-defaults / set-defaults is used
   ;; jit-lock-mode is not applied and mangles the highlighting
   ;; and the hook is missing too

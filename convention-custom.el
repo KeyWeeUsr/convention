@@ -50,6 +50,11 @@
   :type '(repeat color)
   :group 'convention-commits)
 
+(defcustom convention-commits-ask-for-type t
+  "Ask for commit type when default COMMIT_EDITMSG is encountered."
+  :type 'boolean
+  :group 'convention-commits)
+
 
 (provide 'convention-custom)
 ;;; convention-custom.el ends here
