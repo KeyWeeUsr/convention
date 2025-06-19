@@ -122,7 +122,10 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
 
 (defun convention-comments-syntax--activate ()
   "Add conventional comments syntax."
-  (keymap-local-set "C-;" #'convention-comments--ask-type)
+  (let ((map (current-local-map)))
+    (unless map
+      (use-local-map (setq map (make-sparse-keymap))))
+    (keymap-set map "C-;" #'convention-comments--ask-type))
   (if (and (boundp 'comment-start)
            comment-start
            (not (string= "" comment-start)))
