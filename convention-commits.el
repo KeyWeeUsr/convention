@@ -106,7 +106,8 @@
 
 (defun convention-commits--ask-type ()
   "Ask user for commit type to insert."
-  (let* ((start ?0) (prompt "Available choices:\n\n") choices choices-keys chosen)
+  (let* ((start ?0) (prompt "Available choices:\n\n")
+         choices choices-keys chosen)
     (dotimes (idx (length convention-commits-keywords))
       (let ((num (+ start idx))
             (val (nth idx convention-commits-keywords)))

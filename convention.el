@@ -29,6 +29,7 @@
 ;; (add-hook
 ;;  'find-file-hook
 ;;  (lambda (&rest _)
+;;    (convention-comments-mode)
 ;;    (when (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
 ;;      (convention-commits-mode))))
 ;;
