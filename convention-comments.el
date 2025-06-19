@@ -99,8 +99,30 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
                                   comment-string))
   (font-lock-update))
 
+(defun convention-comments--ask-type ()
+  "Ask user for comment type to insert."
+  (interactive)
+  (let* ((start ?0) (prompt "Available choices:\n\n")
+         choices choices-keys chosen)
+    (dotimes (idx (length convention-comments-keywords))
+      (let ((num (+ start idx))
+            (val (nth idx convention-comments-keywords)))
+        (push num choices-keys)
+        (setf (alist-get (intern (number-to-string num)) choices) val)
+        (setq prompt (format "%s%c = %s\n" prompt num val))))
+    (setq prompt (format "%s\n\nC-g = Quit" prompt))
+    (setq chosen (read-char-choice prompt (reverse choices-keys)))
+    (let ((found (alist-get (intern (number-to-string chosen)) choices)))
+      (when found
+        (when convention-comments-insert-asked-type-as-comment
+          (if comment-start
+              (insert (format "%s " comment-start))
+            (insert "# "))
+        (insert (format "%s: " found)))))))
+
 (defun convention-comments-syntax--activate ()
   "Add conventional comments syntax."
+  (keymap-local-set "C-;" #'convention-comments--ask-type)
   (if (and (boundp 'comment-start)
            comment-start
            (not (string= "" comment-start)))
