@@ -125,7 +125,7 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
   (let ((map (current-local-map)))
     (unless map
       (use-local-map (setq map (make-sparse-keymap))))
-    (keymap-set map "C-;" #'convention-comments--ask-type))
+    (define-key map (key-parse "C-;") #'convention-comments--ask-type))
   (if (and (boundp 'comment-start)
            comment-start
            (not (string= "" comment-start)))
