@@ -42,6 +42,11 @@
   :type '(repeat color)
   :group 'convention-comments)
 
+(defcustom convention-comments-insert-asked-type-as-comment t
+  "When inserting an asked for comment type, prefix it with `comment-start'."
+  :type 'boolean
+  :group 'convention-comments)
+
 (defcustom convention-commits-decoration-colors
   '("#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#17becf"
     "#bcbd22" "#7f7f7f" "#e377c2" "#ff6f61" "#30cfcf" "#b5bd00"
