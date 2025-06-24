@@ -9,7 +9,7 @@
 
 (defsubst convention-comments-syntax-defaults ()
   "Basic setup for font-lock."
-  (font-lock-set-defaults)
+  (font-lock-set-defaults) ; nitpick: this line is problematic in some modes
   (setq-local font-lock-keywords-case-fold-search t))
 
 (defsubst convention-comments-syntax-keywords (comment-string)
