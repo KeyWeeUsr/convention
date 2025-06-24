@@ -25,7 +25,13 @@
 
 ;; A collection of minor modes supporting conventional syntax.
 ;;
-;; To enable it for commits with basic EDITOR=emacsclient, you can use:
+;; More on the initiatives on these sites:
+;; * https://conventionalcommits.org
+;; * https://conventionalcomments.org
+;;
+;; To enable it for comments everywhere, and for commits with basic
+;; EDITOR=emacsclient, you can use:
+;;
 ;; (add-hook
 ;;  'find-file-hook
 ;;  (lambda (&rest _)
