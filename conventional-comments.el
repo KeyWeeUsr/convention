@@ -1,4 +1,4 @@
-;;; convention-comments.el --- Comments syntax -*- lexical-binding: t; -*-
+;;; conventional-comments.el --- Comments syntax -*- lexical-binding: t; -*-
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;;; Commentary:
@@ -6,20 +6,20 @@
 ;;; Code:
 
 (require 'newcomment)
-(require 'convention-custom)
+(require 'conventional-custom)
 
-(defsubst convention-comments-syntax-defaults ()
+(defsubst conventional-comments-syntax-defaults ()
   "Basic setup for font-lock."
   (font-lock-set-defaults) ; nitpick: this line is problematic in some modes
   (setq-local font-lock-keywords-case-fold-search t))
 
-(defsubst convention-comments-syntax-keywords (comment-string)
+(defsubst conventional-comments-syntax-keywords (comment-string)
   "Create conventional comments keywords for ELisp.
 Argument COMMENT-STRING represents one or more characters beginning a comment."
   (let ((plain
          (rx-to-string `(and
           (literal ,comment-string) (*? whitespace)
-          (group (or ,@convention-comments-keywords))
+          (group (or ,@conventional-comments-keywords))
           (*? not-newline)
           (group (literal ":"))
           (group (*? not-newline))
@@ -27,7 +27,7 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
         (decorated
          (rx-to-string `(and
           (literal ,comment-string) (*? whitespace)
-          (or ,@convention-comments-keywords)
+          (or ,@conventional-comments-keywords)
           (*? not-newline)
           (group (literal "("))
           (*? not-newline)
@@ -38,7 +38,7 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
         (decoration-anchor
          (rx-to-string `(and
           (literal ,comment-string) (*? whitespace)
-          (or ,@convention-comments-keywords)
+          (or ,@conventional-comments-keywords)
           (*? whitespace)
           (literal "(")
           (group (*? anychar))
@@ -64,7 +64,7 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
                (end (match-end 1))
                (sub (buffer-substring-no-properties
                      begin end))
-               (colors convention-comments-decoration-colors)
+               (colors conventional-comments-decoration-colors)
                (colors-len (length colors))
                (last begin)
                (idx 0))
@@ -84,30 +84,30 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
       ;; no group-matching props needed
       )))))
 
-(defsubst convention-comments-set-syntax (comment-string)
+(defsubst conventional-comments-set-syntax (comment-string)
   "Add conventional comments syntax in ELisp.
 Argument COMMENT-STRING represents one or more characters beginning a comment."
-  (convention-comments-syntax-defaults)
-  (font-lock-add-keywords nil (convention-comments-syntax-keywords
+  (conventional-comments-syntax-defaults)
+  (font-lock-add-keywords nil (conventional-comments-syntax-keywords
                                comment-string))
   (font-lock-update))
 
-(defsubst convention-comments-unset-syntax (comment-string)
+(defsubst conventional-comments-unset-syntax (comment-string)
   "Remove conventional comments syntax in ELisp.
 Argument COMMENT-STRING represents one or more characters beginning a comment."
-  (convention-comments-syntax-defaults)
-  (font-lock-remove-keywords nil (convention-comments-syntax-keywords
+  (conventional-comments-syntax-defaults)
+  (font-lock-remove-keywords nil (conventional-comments-syntax-keywords
                                   comment-string))
   (font-lock-update))
 
-(defun convention-comments--ask-type ()
+(defun conventional-comments--ask-type ()
   "Ask user for comment type to insert."
   (interactive)
   (let* ((start ?0) (prompt "Available choices:\n\n")
          choices choices-keys chosen)
-    (dotimes (idx (length convention-comments-keywords))
+    (dotimes (idx (length conventional-comments-keywords))
       (let ((num (+ start idx))
-            (val (nth idx convention-comments-keywords)))
+            (val (nth idx conventional-comments-keywords)))
         (push num choices-keys)
         (setf (alist-get (intern (number-to-string num)) choices) val)
         (setq prompt (format "%s%c = %s\n" prompt num val))))
@@ -115,13 +115,13 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
     (setq chosen (read-char-choice prompt (reverse choices-keys)))
     (let ((found (alist-get (intern (number-to-string chosen)) choices)))
       (when found
-        (when convention-comments-insert-asked-type-as-comment
+        (when conventional-comments-insert-asked-type-as-comment
           (if comment-start
               (insert (format "%s " comment-start))
             (insert "# "))
         (insert (format "%s: " found)))))))
 
-(defsubst convention-comments-syntax--check ()
+(defsubst conventional-comments-syntax--check ()
   "Check for `comment-start' and set it for `comment-dwim'."
   (unless (and (boundp 'comment-start)
                (not (string= "" (string-trim (or comment-start "") " "))))
@@ -133,20 +133,20 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
       (setq-local comment-start-skip tmp)
       (comment-normalize-vars))))
 
-(defun convention-comments-syntax--activate ()
+(defun conventional-comments-syntax--activate ()
   "Add conventional comments syntax."
   (let ((map (current-local-map)))
     (unless map
       (use-local-map (setq map (make-sparse-keymap))))
-    (define-key map (key-parse "C-;") #'convention-comments--ask-type))
-  (convention-comments-syntax--check)
-  (convention-comments-set-syntax comment-start))
+    (define-key map (key-parse "C-;") #'conventional-comments--ask-type))
+  (conventional-comments-syntax--check)
+  (conventional-comments-set-syntax comment-start))
 
-(defun convention-comments-syntax--deactivate ()
+(defun conventional-comments-syntax--deactivate ()
   "Remove conventional comments syntax."
-  (convention-comments-syntax--check)
-  (convention-comments-unset-syntax comment-start))
+  (conventional-comments-syntax--check)
+  (conventional-comments-unset-syntax comment-start))
 
 
-(provide 'convention-comments)
-;;; convention-comments.el ends here
+(provide 'conventional-comments)
+;;; conventional-comments.el ends here

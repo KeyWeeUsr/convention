@@ -1,30 +1,30 @@
-;;; convention-commits.el --- Commits syntax -*- lexical-binding: t; -*-
+;;; conventional-commits.el --- Commits syntax -*- lexical-binding: t; -*-
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;;; Commentary:
 
 ;;; Code:
 
-(require 'convention-custom)
+(require 'conventional-custom)
 
-(defsubst convention-commits-syntax-keywords ()
+(defsubst conventional-commits-syntax-keywords ()
   "Create conventional comments keywords."
   (let ((plain
          (rx-to-string `(and
-          string-start (group (or ,@convention-commits-keywords))
+          string-start (group (or ,@conventional-commits-keywords))
           (*? not-newline)
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline))
           line-end)))
         (decorated
          (rx-to-string `(and
-          string-start (or ,@convention-commits-keywords) (*? not-newline)
+          string-start (or ,@conventional-commits-keywords) (*? not-newline)
           (group (literal "(")) (*? not-newline) (group (literal ")"))
           (group (? (literal "!"))) (group (literal ":"))
           (group (*? not-newline)) line-end)))
         (decoration-anchor
          (rx-to-string `(and
-          string-start (or ,@convention-commits-keywords) (*? whitespace)
+          string-start (or ,@conventional-commits-keywords) (*? whitespace)
           (literal "(") (group (*? anychar)) (literal ")") (? (literal "!"))
           (literal ":"))))
         (decoration (rx (+? (group (+ not-newline)) (*? (literal ",")))))
@@ -59,7 +59,7 @@
                  (end (match-end 1))
                  (sub (buffer-substring-no-properties
                        begin end))
-                 (colors convention-commits-decoration-colors)
+                 (colors conventional-commits-decoration-colors)
                  (colors-len (length colors))
                  (last begin)
                  (idx 0))
@@ -96,7 +96,7 @@
         (3 'bold)
         (4 'italic))))))
 
-(defun convention-commits--should-suggest ()
+(defun conventional-commits--should-suggest ()
   "Check COMMIT_EDITMSG whether it's empty."
   (catch 'suggest
     (dolist (line (split-string (buffer-string) "\n" t " "))
@@ -104,13 +104,13 @@
         (throw 'suggest nil)))
     (throw 'suggest t)))
 
-(defun convention-commits--ask-type ()
+(defun conventional-commits--ask-type ()
   "Ask user for commit type to insert."
   (let* ((start ?0) (prompt "Available choices:\n\n")
          choices choices-keys chosen)
-    (dotimes (idx (length convention-commits-keywords))
+    (dotimes (idx (length conventional-commits-keywords))
       (let ((num (+ start idx))
-            (val (nth idx convention-commits-keywords)))
+            (val (nth idx conventional-commits-keywords)))
         (push num choices-keys)
         (setf (alist-get (intern (number-to-string num)) choices) val)
         (setq prompt (format "%s%c = %s\n" prompt num val))))
@@ -120,12 +120,12 @@
       (when found
         (insert (format "%s: " found))))))
 
-(defun convention-commits-syntax--activate ()
+(defun conventional-commits-syntax--activate ()
   "Add conventional comments syntax."
-  (when (and convention-commits-ask-for-type
-             (convention-commits--should-suggest))
+  (when (and conventional-commits-ask-for-type
+             (conventional-commits--should-suggest))
     (save-window-excursion
-      (convention-commits--ask-type)))
+      (conventional-commits--ask-type)))
 
   ;; todo(font-lock): whenever font-lock-defaults / set-defaults is used
   ;; jit-lock-mode is not applied and mangles the highlighting
@@ -134,16 +134,16 @@
   (add-hook 'after-change-functions #'font-lock-after-change-function t t)
 
   (setq-local font-lock-defaults '(nil nil t))
-  (font-lock-add-keywords nil (convention-commits-syntax-keywords))
+  (font-lock-add-keywords nil (conventional-commits-syntax-keywords))
   (font-lock-update))
 
-(defun convention-commits-syntax--deactivate ()
+(defun conventional-commits-syntax--deactivate ()
   "Remove conventional comments syntax."
   (remove-hook 'after-change-functions #'font-lock-after-change-function t)
   (setq-local font-lock-defaults '(nil nil t))
-  (font-lock-remove-keywords nil (convention-commits-syntax-keywords))
+  (font-lock-remove-keywords nil (conventional-commits-syntax-keywords))
   (font-lock-update))
 
 
-(provide 'convention-commits)
-;;; convention-commits.el ends here
+(provide 'conventional-commits)
+;;; conventional-commits.el ends here

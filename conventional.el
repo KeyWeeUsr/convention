@@ -1,4 +1,4 @@
-;;; convention.el --- Enable conventional syntax -*- lexical-binding: t; -*-
+;;; conventional.el --- Enable conventional syntax -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Peter Badida
 
@@ -6,7 +6,7 @@
 ;; Keywords: convenience, conventional, mode, helper, git, comment, commit
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "28.1"))
-;; Homepage: https://github.com/KeyWeeUsr/convention
+;; Homepage: https://github.com/KeyWeeUsr/conventional
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,35 +35,35 @@
 ;; (add-hook
 ;;  'find-file-hook
 ;;  (lambda (&rest _)
-;;    (convention-comments-mode)
+;;    (conventional-comments-mode)
 ;;    (when (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
-;;      (convention-commits-mode))))
+;;      (conventional-commits-mode))))
 ;;
 ;; The hook worked for me both with plain term and with magit (with EDITOR env)
 
 ;;; Code:
 
-(require 'convention-comments)
-(require 'convention-commits)
+(require 'conventional-comments)
+(require 'conventional-commits)
 
 ;;;###autoload
-(define-minor-mode convention-comments-mode
+(define-minor-mode conventional-comments-mode
   "Minor mode for conventional comments."
-  :group 'convention
-  :lighter " convention"
-  (if convention-comments-mode
-      (convention-comments-syntax--activate)
-    (convention-comments-syntax--deactivate)))
+  :group 'conventional
+  :lighter " conventional"
+  (if conventional-comments-mode
+      (conventional-comments-syntax--activate)
+    (conventional-comments-syntax--deactivate)))
 
 ;;;###autoload
-(define-minor-mode convention-commits-mode
+(define-minor-mode conventional-commits-mode
   "Minor mode for conventional commits."
-  :group 'convention
-  :lighter " convention"
-  (if convention-commits-mode
-      (convention-commits-syntax--activate)
-    (convention-commits-syntax--deactivate)))
+  :group 'conventional
+  :lighter " conventional"
+  (if conventional-commits-mode
+      (conventional-commits-syntax--activate)
+    (conventional-commits-syntax--deactivate)))
 
 
-(provide 'convention)
-;;; convention.el ends here
+(provide 'conventional)
+;;; conventional.el ends here

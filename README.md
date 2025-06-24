@@ -1,9 +1,9 @@
-# convention
+# conventional
 [![Buy me a coffee][bmc-badge]][bmc-link]
 [![Liberapay][lp-badge]][lp-link]
 [![PayPal][ppl-badge]][ppl-link]
 
-A collection of minor modes supporting Convention.el [sic] syntax.
+A collection of minor modes supporting Conventional syntax.
 
 Currently available:
 * [conventional: comments][comments]
@@ -12,8 +12,8 @@ Currently available:
 ## How to
 
 Clone and install manually, then simply:
-* `M-x convention-comments-mode`
-* `M-x convention-commits-mode`
+* `M-x conventional-comments-mode`
+* `M-x conventional-commits-mode`
 
 ### Enable for commit editing in Emacs
 
@@ -27,9 +27,9 @@ the mode for conventional commits like this:
 (add-hook
  'find-file-hook
  (lambda (&rest _)
-   (convention-comments-mode)
+   (conventional-comments-mode)
    (when (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
-     (convention-commits-mode))))
+     (conventional-commits-mode))))
 ```
 
 [bmc-badge]: https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee
