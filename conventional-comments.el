@@ -5,7 +5,6 @@
 
 ;;; Code:
 
-(require 'keymap)
 (require 'newcomment)
 (require 'conventional-custom)
 
@@ -139,7 +138,7 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
   (let ((map (current-local-map)))
     (unless map
       (use-local-map (setq map (make-sparse-keymap))))
-    (define-key map (key-parse "C-;") #'conventional-comments--ask-type))
+    (define-key map "C-;" #'conventional-comments--ask-type))
   (conventional-comments-syntax--check)
   (conventional-comments-set-syntax comment-start))
 
