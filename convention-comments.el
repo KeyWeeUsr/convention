@@ -5,6 +5,7 @@
 
 ;;; Code:
 
+(require 'newcomment)
 (require 'convention-custom)
 
 (defsubst convention-comments-syntax-defaults ()
@@ -120,29 +121,31 @@ Argument COMMENT-STRING represents one or more characters beginning a comment."
             (insert "# "))
         (insert (format "%s: " found)))))))
 
+(defsubst convention-comments-syntax--check ()
+  "Check for `comment-start' and set it for `comment-dwim'."
+  (unless (and (boundp 'comment-start)
+               (not (string= "" (string-trim (or comment-start "") " "))))
+    ;; pre-(comment-dwim) fallback
+    (let ((tmp (read-string "No comment syntax is defined.  Use: ")))
+      (when (string= "" (string-trim tmp " "))
+        (error "Bad comment syntax"))
+      (setq-local comment-start tmp)
+      (setq-local comment-start-skip tmp)
+      (comment-normalize-vars))))
+
 (defun convention-comments-syntax--activate ()
   "Add conventional comments syntax."
   (let ((map (current-local-map)))
     (unless map
       (use-local-map (setq map (make-sparse-keymap))))
     (define-key map (key-parse "C-;") #'convention-comments--ask-type))
-  (if (and (boundp 'comment-start)
-           comment-start
-           (not (string= "" comment-start)))
-      (convention-comments-set-syntax comment-start)
-    (warn "convention: missing comment-start, fallback")
-    (cond ((derived-mode-p 'emacs-lisp-mode)
-           (convention-comments-set-syntax ";")))))
+  (convention-comments-syntax--check)
+  (convention-comments-set-syntax comment-start))
 
 (defun convention-comments-syntax--deactivate ()
   "Remove conventional comments syntax."
-  (if (and (boundp 'comment-start)
-           comment-start
-           (not (string= "" comment-start)))
-      (convention-comments-unset-syntax comment-start)
-    (warn "convention: missing comment-start, fallback")
-    (cond ((derived-mode-p 'emacs-lisp-mode)
-           (convention-comments-unset-syntax ";")))))
+  (convention-comments-syntax--check)
+  (convention-comments-unset-syntax comment-start))
 
 
 (provide 'convention-comments)
