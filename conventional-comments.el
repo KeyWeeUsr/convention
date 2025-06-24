@@ -5,6 +5,7 @@
 
 ;;; Code:
 
+(require 'keymap)
 (require 'newcomment)
 (require 'conventional-custom)
 
