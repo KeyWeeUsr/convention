@@ -31,9 +31,9 @@ the mode for conventional commits like this:
 (add-hook
  'find-file-hook
  (lambda (&rest _)
-   (conventional-comments-mode)
-   (when (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
-     (conventional-commits-mode))))
+   (if (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
+       (conventional-commits-mode)
+     (conventional-comments-mode))))
 ```
 
 [melpa-badge]: http://melpa.org/packages/conventional-badge.svg

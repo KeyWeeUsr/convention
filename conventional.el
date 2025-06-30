@@ -35,9 +35,9 @@
 ;; (add-hook
 ;;  'find-file-hook
 ;;  (lambda (&rest _)
-;;    (conventional-comments-mode)
-;;    (when (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
-;;      (conventional-commits-mode))))
+;;    (if (string= (file-name-base buffer-file-name) "COMMIT_EDITMSG")
+;;        (conventional-commits-mode)
+;;      (conventional-comments-mode))))
 ;;
 ;; The hook worked for me both with plain term and with magit (with EDITOR env)
 
